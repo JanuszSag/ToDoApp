@@ -3,13 +3,13 @@ namespace ToDoApp.DTO;
 public class ToDoTaskDTO
 {
     public int Id { get; set; }
-    public string Title { get; set; }
-    public bool isCompleted { get; set; }
+    public string Name { get; set; }
+    public bool IsCompleted { get; set; }
 
-    public ToDoTaskDTO(int id, string? title, bool isCompleted)
+    public ToDoTaskDTO(int Id, string? Name, bool IsCompleted)
     {
-        Id = id;
-        Title = title;
-        this.isCompleted = isCompleted;
+        this.Id = Id;
+        this.Name = Name;
+        this.IsCompleted = IsCompleted;
     }
 }
