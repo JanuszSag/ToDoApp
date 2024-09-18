@@ -3,6 +3,7 @@ using ToDoApp.Components;
 using ToDoApp.Components.Services;
 using ToDoApp.Models;
 using ToDoApp.Services;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddTransient<IToDoService, ToDoService>();
 builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlServer());
+builder.Services.AddMudServices();
+
 
 var app = builder.Build();
 
