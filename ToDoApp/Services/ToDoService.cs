@@ -23,7 +23,6 @@ public class ToDoService : IToDoService
             
         });
         await _context.SaveChangesAsync();
-        throw new NotImplementedException();
     }
 
     public async Task<List<ToDoTaskDTO>> getAllToDoItemsListAsync()

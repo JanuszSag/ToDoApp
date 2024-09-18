@@ -1,12 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using ToDoApp.Components;
+using ToDoApp.Components.Services;
 using ToDoApp.Models;
+using ToDoApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddTransient<IToDoService, ToDoService>();
 builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlServer());
 
 var app = builder.Build();

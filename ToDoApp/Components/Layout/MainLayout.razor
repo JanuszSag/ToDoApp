@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using ToDoApp.Models
+@using ToDoApp.Services
+@inherits LayoutComponentBase
+@inject ToDoContext Context
 
 <div class="page">
     <div class="sidebar">
@@ -11,8 +14,32 @@
         </div>
 
         <article class="content px-4">
-            @Body
-            aaa
+            @if (ToDoItems == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>state</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in ToDoItems)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Name</td>
+                            <td>@item.IsCompleted</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            }
         </article>
     </main>
 </div>
@@ -25,5 +52,12 @@
 
 @code
 {
-    
+    public List<ToDoTask> ToDoItems;
+
+    protected override Task OnInitializedAsync()
+    {
+        ToDoItems = Context.ToDoTask.ToList();
+        return base.OnInitializedAsync();
+    }
+
 }
