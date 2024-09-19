@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddTransient<IToDoService, ToDoService>();
+builder.Services.AddTransient<IToDoService,ToDoService>();
 builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlServer());
 builder.Services.AddMudServices();
 

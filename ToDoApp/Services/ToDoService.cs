@@ -22,6 +22,14 @@ public class ToDoService : IToDoService
             IsCompleted = item.IsCompleted,
             
         });
+        Console.WriteLine(_context.ToDoTask.ToList().Count);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task RemoveToDoItemAsync(int id)
+    {
+        var itemToRemove = _context.ToDoTask.ToList().Find(o => o.Id == id);
+        _context.ToDoTask.Remove(itemToRemove);
         await _context.SaveChangesAsync();
     }
 
@@ -33,6 +41,7 @@ public class ToDoService : IToDoService
                                                .Select(t=>new ToDoTaskDTO(t.Id,t.Name,t.IsCompleted))
                                                .ToListAsync();
         return toDoItems;
+        
     }
 
 }

@@ -1,20 +1,37 @@
+@using ToDoApp.Components.Services
+@using ToDoApp.DTO
+@using ToDoApp.Models
+@inject ToDoContext Context
+@inject IToDoService ToDoService
+
 <MudDialog>
     <TitleContent>
-        Dialog Title
+        Add new to do item
     </TitleContent>
     <DialogContent>
-        Dialog Content
+        <MudForm class="d-flex flex-grow-1 gap-4">
+            <MudTextField T="string" Label="Name" Required="true" RequiredError="Name is required" @bind-Value="Name"></MudTextField>
+            <MudCheckBox Label="Is Completed?" @bind-Value="isCompleted" Color="Color.Primary"></MudCheckBox>
+        </MudForm>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@Submit">Add</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    public bool isCompleted { get; set; } = false;
+    public String Name { get; set; }
 
-    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    
+    private void Submit()
+    {
+        ToDoService.AddToDoItemAsync(new ToDoTaskDTO(Context.ToDoTask.ToList().Count, Name, isCompleted));
+        MudDialog.Close(DialogResult.Ok(true));
+    }
 
     private void Cancel() => MudDialog.Cancel();
+    
 }

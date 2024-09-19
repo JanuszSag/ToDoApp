@@ -1,49 +1,38 @@
 ﻿@page "/"
+@using ToDoApp.Components.Services
+@using ToDoApp.DTO
 @using ToDoApp.Models
+@using ToDoApp.Services
 @inject ToDoContext Context
 @inject IDialogService DialogService
+@inject IToDoService ToDoService
 
 <MudThemeProvider />
 <MudPopoverProvider />
 
 <MudDialogProvider />
 
-<article class="content px-4">
-    @if (ToDoItems == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>state</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in ToDoItems)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.Name</td>
-                    <td>@item.IsCompleted</td>
-                </tr>
-            }
-            </tbody>
-        </table>
-        <MudButton OnClick="@(() => OpenDialogAsync())" Variant="Variant.Filled" Color="Color.Primary">Add new item</MudButton>
-    }
-</article>
+<MudTable Items="@ToDoItems" Hover="true">
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>State</MudTh>
+        <MudTh>Action</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="isCompleted">@context.IsCompleted</MudTd>
+        <MudTd DataLabel="Remove"><MudButton Variant="Variant.Filled" Color="Color.Secondary">Remove</MudButton></MudTd>
+    </RowTemplate>
+</MudTable>
 
-
+<MudButton OnClick="@(() => OpenDialogAsync())" Variant="Variant.Filled" Color="Color.Primary">Add new item</MudButton>
 
 @code
 {
     public List<ToDoTask> ToDoItems;
-
+    
     protected override Task OnInitializedAsync()
     {
         ToDoItems = Context.ToDoTask.ToList();
@@ -54,7 +43,18 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        return DialogService.ShowAsync<AddToDoDialog>("Simple Dialog", new DialogOptions(){CloseButton = true});
+        return DialogService.ShowAsync<AddToDoDialog>("Simple Dialog", new DialogOptions()
+        {
+            CloseButton = true, 
+            MaxWidth = MaxWidth.Medium, 
+            FullWidth = true
+        });
     }
-    
+
+    private void removeItemAsync(int id)
+    {
+        ToDoService.RemoveToDoItemAsync(id);
+    }
+
+
 }

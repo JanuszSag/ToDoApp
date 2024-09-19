@@ -7,4 +7,5 @@ public interface IToDoService
 {
     public Task AddToDoItemAsync(ToDoTaskDTO item);
     public Task<List<ToDoTaskDTO>> getAllToDoItemsListAsync();
+    public Task RemoveToDoItemAsync(int id);
 }

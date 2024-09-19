@@ -25,8 +25,7 @@ public class ToDoContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(
-            "Data Source=(localDb)\\MSSQLLocalDb;Initial Catalog=ToDo;Integrated Security=True");
+        optionsBuilder.UseSqlServer("Data Source=(localDb)\\MSSQLLocalDb;Initial Catalog=ToDo;Integrated Security=True");
         base.OnConfiguring(optionsBuilder);
     }
 }
