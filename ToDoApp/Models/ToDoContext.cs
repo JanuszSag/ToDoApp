@@ -3,29 +3,13 @@ using ToDoApp.Configurations;
 
 namespace ToDoApp.Models;
 
-public class ToDoContext : DbContext
+public class ToDoContext(DbContextOptions<ToDoContext> options) : DbContext(options)
 {
-    public ToDoContext()
-    {
-        
-    }
-
-    public ToDoContext(DbContextOptions<DbContext> options) : base(options)
-    {
-        
-    }
-    
-    public virtual DbSet<ToDoTask> ToDoTask { get; set; }
+    public DbSet<ToDoTask> ToDoTask { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new ToDoConfig());
 
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer("Data Source=(localDb)\\MSSQLLocalDb;Initial Catalog=ToDo;Integrated Security=True");
-        base.OnConfiguring(optionsBuilder);
     }
 }

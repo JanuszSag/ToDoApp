@@ -1,23 +1,15 @@
 using Microsoft.EntityFrameworkCore;
-using ToDoApp.Components.Services;
-using ToDoApp.DTO;
 using ToDoApp.Models;
 
 namespace ToDoApp.Services;
 
-public class ToDoService : IToDoService
+public class ToDoService(ToDoContext _context)
 {
-    private readonly ToDoContext _context;
-
-    public ToDoService(ToDoContext context)
-    {
-        _context = context;
-    }
-    public async Task AddToDoItemAsync(ToDoTaskDTO item)
+    public async Task AddToDoItemAsync(ToDoTask item)
     {
         _context.ToDoTask.Add(new ToDoTask
         {
-            Id = item.Id,
+            Id = 0,
             Name = item.Name,
             IsCompleted = item.IsCompleted,
             
@@ -28,19 +20,25 @@ public class ToDoService : IToDoService
 
     public async Task RemoveToDoItemAsync(int id)
     {
-        var itemToRemove = _context.ToDoTask.ToList().Find(o => o.Id == id);
+        var itemToRemove = await _context.ToDoTask.FindAsync(id);
+        if (itemToRemove == null)
+            return;
+        
         _context.ToDoTask.Remove(itemToRemove);
         await _context.SaveChangesAsync();
     }
 
-    public async Task<List<ToDoTaskDTO>> getAllToDoItemsListAsync()
+    public async Task<List<ToDoTask>> getAllToDoItemsListAsync()
     {
-        var toDoItems = await _context.ToDoTask.Include(t=>t.Id)
-                                               .Include(t=>t.Name)
-                                               .Include(t=>t.IsCompleted)
-                                               .Select(t=>new ToDoTaskDTO(t.Id,t.Name,t.IsCompleted))
-                                               .ToListAsync();
+        var toDoItems = await _context.ToDoTask.ToListAsync();
         return toDoItems;
+    }
+
+    public async Task HandleCheckbox(bool value, int id)
+    {
+        var itemToChange = await _context.ToDoTask.FindAsync(id);
+        itemToChange.IsCompleted = value;
+        await _context.SaveChangesAsync();
         
     }
 

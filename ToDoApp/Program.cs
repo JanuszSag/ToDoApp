@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using ToDoApp.Components;
-using ToDoApp.Components.Services;
 using ToDoApp.Models;
 using ToDoApp.Services;
 using MudBlazor.Services;
@@ -10,8 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-builder.Services.AddTransient<IToDoService,ToDoService>();
-builder.Services.AddDbContext<ToDoContext>(options => options.UseSqlServer());
+builder.Services.AddDbContext<ToDoContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("Database"),
+    x => x.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+    ));
+
+builder.Services.AddScoped<ToDoService>();
+
 builder.Services.AddMudServices();
 
 

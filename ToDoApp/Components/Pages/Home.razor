@@ -1,16 +1,9 @@
 ﻿@page "/"
-@using ToDoApp.Components.Services
-@using ToDoApp.DTO
 @using ToDoApp.Models
 @using ToDoApp.Services
-@inject ToDoContext Context
 @inject IDialogService DialogService
-@inject IToDoService ToDoService
+@inject ToDoService ToDoService
 
-<MudThemeProvider />
-<MudPopoverProvider />
-
-<MudDialogProvider />
 
 <MudTable Items="@ToDoItems" Hover="true">
     <HeaderContent>
@@ -22,8 +15,11 @@
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd DataLabel="isCompleted">@context.IsCompleted</MudTd>
-        <MudTd DataLabel="Remove"><MudButton Variant="Variant.Filled" Color="Color.Secondary">Remove</MudButton></MudTd>
+        <MudTd DataLabel="isCompleted">
+            <MudCheckBox @bind-Value="@context.IsCompleted" CheckedChanged=@ToDoService.HandleCheckbox(@context.IsCompleted,@context.Id)></MudCheckBox>
+        </MudTd>
+        <MudTd DataLabel="Remove"><MudButton Variant="Variant.Filled" Color="Color.Secondary"
+                                             OnClick="@(async () => await RemoveItemAsync(context.Id))">Remove</MudButton></MudTd>
     </RowTemplate>
 </MudTable>
 
@@ -31,29 +27,43 @@
 
 @code
 {
-    public List<ToDoTask> ToDoItems;
+    public bool test {get;set;} = true;
+            
+    public List<ToDoTask> ToDoItems = [];
     
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        ToDoItems = Context.ToDoTask.ToList();
-        return base.OnInitializedAsync();
+        ToDoItems = await ToDoService.getAllToDoItemsListAsync();
+        await base.OnInitializedAsync();
     }
     
-    private Task OpenDialogAsync()
+    private async Task OpenDialogAsync()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        return DialogService.ShowAsync<AddToDoDialog>("Simple Dialog", new DialogOptions()
+        var reference = await DialogService.ShowAsync<AddToDoDialog>("Simple Dialog", new DialogOptions()
         {
             CloseButton = true, 
             MaxWidth = MaxWidth.Medium, 
             FullWidth = true
         });
+
+        var result = await reference.Result;
+        if(result.Canceled || result is null) 
+            return;
+        
+        if(result.Data is true)
+        {
+            ToDoItems = await ToDoService.getAllToDoItemsListAsync(); 
+            StateHasChanged();
+        }
     }
 
-    private void removeItemAsync(int id)
+    private async Task RemoveItemAsync(int id)
     {
-        ToDoService.RemoveToDoItemAsync(id);
+        await ToDoService.RemoveToDoItemAsync(id);
+        ToDoItems = await ToDoService.getAllToDoItemsListAsync();
+        StateHasChanged();
     }
 
 

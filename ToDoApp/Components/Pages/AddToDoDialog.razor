@@ -1,8 +1,6 @@
-@using ToDoApp.Components.Services
-@using ToDoApp.DTO
 @using ToDoApp.Models
-@inject ToDoContext Context
-@inject IToDoService ToDoService
+@using ToDoApp.Services
+@inject ToDoService ToDoService
 
 <MudDialog>
     <TitleContent>
@@ -11,7 +9,7 @@
     <DialogContent>
         <MudForm class="d-flex flex-grow-1 gap-4">
             <MudTextField T="string" Label="Name" Required="true" RequiredError="Name is required" @bind-Value="Name"></MudTextField>
-            <MudCheckBox Label="Is Completed?" @bind-Value="isCompleted" Color="Color.Primary"></MudCheckBox>
+            <MudCheckBox Label="Is Completed?" @bind-Value="IsCompleted" Color="Color.Primary"></MudCheckBox>
         </MudForm>
     </DialogContent>
     <DialogActions>
@@ -21,14 +19,14 @@
 </MudDialog>
 
 @code {
-    public bool isCompleted { get; set; } = false;
-    public String Name { get; set; }
+    public bool IsCompleted { get; set; } = false;
+    public String Name { get; set; } = string.Empty;
 
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
     
-    private void Submit()
+    private async void Submit()
     {
-        ToDoService.AddToDoItemAsync(new ToDoTaskDTO(Context.ToDoTask.ToList().Count, Name, isCompleted));
+        await ToDoService.AddToDoItemAsync(new ToDoTask( Name, IsCompleted));
         MudDialog.Close(DialogResult.Ok(true));
     }
 

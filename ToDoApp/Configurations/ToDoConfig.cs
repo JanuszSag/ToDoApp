@@ -17,19 +17,19 @@ public class ToDoConfig : IEntityTypeConfiguration<ToDoTask>
         
         toDoItems.Add(new ToDoTask
         {
-            Id = 1,
+            Id = -1,
             Name = "Task 1",
             IsCompleted = false
         });
         toDoItems.Add(new ToDoTask
         {
-            Id = 2,
+            Id = -2,
             Name = "Task 1",
             IsCompleted = false
         });
         toDoItems.Add(new ToDoTask
         {
-            Id = 3,
+            Id = -3,
             Name = "Task 3",
             IsCompleted = true
         });
